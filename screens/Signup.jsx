@@ -6,6 +6,7 @@ import * as Yup from "yup";
 import FormInput from "../components/FormInput";
 import FormButton from "../components/FormButton";
 import ErrorMessage from "../components/ErrorMessage";
+import * as Api from "../Api/firebaseAuth";
 
 const validationSchema = Yup.object().shape({
   name: Yup.string()
@@ -25,14 +26,21 @@ const validationSchema = Yup.object().shape({
     .required("Confirm Password is required")
 });
 
+const login = values => {
+  Api.createUser(values.email, values.password);
+
+  //props.navigation.navigate("Main");
+};
+
 export default class Signup extends React.Component {
   goToLogin = () => this.props.navigation.navigate("Login");
 
   handleSubmit = values => {
     if (values.email.length > 0 && values.password.length > 0) {
-      setTimeout(() => {
-        this.props.navigation.navigate("App");
-      }, 3000);
+      login(values);
+      // setTimeout(() => {
+      //   this.props.navigation.navigate("App");
+      // }, 3000);
     }
   };
 
