@@ -26,21 +26,23 @@ const validationSchema = Yup.object().shape({
     .required("Confirm Password is required")
 });
 
-const login = values => {
-  Api.createUser(values.email, values.password);
-
-  //props.navigation.navigate("Main");
+const firebaseCreateUser = async values => {
+  return await Api.createUser(values.email, values.password)
+    .then(res => console.log("~~~~~res", res))
+    .catch(function(error) {
+      var errorCode = error.code;
+      var errorMessage = error.message;
+      console.log(errorCode, errorMessage);
+    });
 };
-
 export default class Signup extends React.Component {
   goToLogin = () => this.props.navigation.navigate("Login");
 
-  handleSubmit = values => {
+  handleSubmit = async values => {
     if (values.email.length > 0 && values.password.length > 0) {
-      login(values);
-      // setTimeout(() => {
-      //   this.props.navigation.navigate("App");
-      // }, 3000);
+      console.log("submit: ", values);
+      this.props.navigation.navigate("App");
+      return await firebaseCreateUser(values);
     }
   };
 
@@ -56,6 +58,8 @@ export default class Signup extends React.Component {
           }}
           onSubmit={values => {
             this.handleSubmit(values);
+            console.log("navigate to APP");
+            // actions.setSubmitting(false);
           }}
           validationSchema={validationSchema}
         >
